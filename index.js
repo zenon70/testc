@@ -18,10 +18,24 @@ submitBtn.addEventListener("click", () => {
  
 });
 
-const generatePDF = async (name, role, date) => {
+const generatePDF = async (name) => {
   const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
     res.arrayBuffer()
   );
+
+
+const generatePDF = async (role) => {
+  const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
+    res.arrayBuffer()
+  );
+
+const generatePDF = async (date) => {
+  const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
+    res.arrayBuffer()
+  );
+
+
+
 
   // Load a PDFDocument from the existing PDF bytes
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
