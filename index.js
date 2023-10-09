@@ -6,38 +6,7 @@ const date = new Date();
 
 const { PDFDocument, rgb, degrees } = PDFLib;
 
-
-const capitalize = (str, lower = false) =>
-  (lower ? str.toLowerCase() : str).replace(/(?:^|\s|["'([{])+\S/g, (match) =>
-    match.toUpperCase()
-  );
-
-submitBtn.addEventListener("click", () => {
-
-    generatePDF(userName.value);
-  generatePDF(userRole.value);
-  generatePDF(date.value);
- 
-});
-
-const generatePDF = async (name) => {
-  const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
-    res.arrayBuffer()
-  );
-
-
-const generatePDF = async (role) => {
-  const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
-    res.arrayBuffer()
-  );
-
-const generatePDF = async (date) => {
-  const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
-    res.arrayBuffer()
-  );
-
-
-
+const {userName.value, userRole.value, date.value} = val;
 
   // Load a PDFDocument from the existing PDF bytes
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
@@ -79,6 +48,32 @@ firstPage.drawText(date, {
     font: SanChezFont,
     color: rgb(0.2, 0.84, 0.67),
   });
+
+
+
+submitBtn.addEventListener("click", () => {
+
+    generatePDF(val);
+ 
+});
+
+const generatePDF = async (name) => {
+  const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
+    res.arrayBuffer()
+  );
+
+
+const generatePDF = async (role) => {
+  const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
+    res.arrayBuffer()
+  );
+
+const generatePDF = async (date) => {
+  const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
+    res.arrayBuffer()
+  );
+
+
   // Serialize the PDFDocument to bytes (a Uint8Array)
   const pdfBytes = await pdfDoc.save();
   console.log("Done creating");
@@ -90,7 +85,7 @@ firstPage.drawText(date, {
 
   var file = new File(
     [pdfBytes],
-    "Padhega India Subscription Certificate.pdf",
+    "certificate.pdf",
     {
       type: "application/pdf;charset=utf-8",
     }
