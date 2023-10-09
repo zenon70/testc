@@ -13,15 +13,9 @@ const capitalize = (str, lower = false) =>
   );
 
 submitBtn.addEventListener("click", () => {
-  const val = capitalize(userName.value, userRole.value, date.value);
 
-  //check if the text is empty or not
-  if (val.trim() !== "" && userName.checkValidity()) {
-    // console.log(val);
-    generatePDF(val);
-  } else {
-    userName.reportValidity();
-  }
+    generatePDF();
+ 
 });
 
 const generatePDF = async (name, role, date) => {
