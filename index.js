@@ -24,7 +24,7 @@ submitBtn.addEventListener("click", () => {
   }
 });
 
-const generatePDF = async (name) => {
+const generatePDF = async (name, role, date) => {
   const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
     res.arrayBuffer()
   );
