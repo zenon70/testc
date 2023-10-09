@@ -1,5 +1,8 @@
 const userName = document.getElementById("name");
+const userRole = document.getElementById("role");
 const submitBtn = document.getElementById("submitBtn");
+const date = new Date();
+
 
 const { PDFDocument, rgb, degrees } = PDFLib;
 
@@ -51,6 +54,21 @@ const generatePDF = async (name) => {
     color: rgb(0.2, 0.84, 0.67),
   });
 
+  firstPage.drawText(role, {
+    x: 100,
+    y: 170,
+    size: 70,
+    font: SanChezFont,
+    color: rgb(0.2, 0.84, 0.67),
+  });
+
+firstPage.drawText(date, {
+    x: 400,
+    y: 370,
+    size: 70,
+    font: SanChezFont,
+    color: rgb(0.2, 0.84, 0.67),
+  });
   // Serialize the PDFDocument to bytes (a Uint8Array)
   const pdfBytes = await pdfDoc.save();
   console.log("Done creating");
