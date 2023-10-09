@@ -13,7 +13,7 @@ const capitalize = (str, lower = false) =>
   );
 
 submitBtn.addEventListener("click", () => {
-  const val = capitalize(userName.value);
+  const val = capitalize(userName.value, userRole.value, date.value);
 
   //check if the text is empty or not
   if (val.trim() !== "" && userName.checkValidity()) {
@@ -24,7 +24,7 @@ submitBtn.addEventListener("click", () => {
   }
 });
 
-const generatePDF = async (name, role) => {
+const generatePDF = async (name, role, date) => {
   const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
     res.arrayBuffer()
   );
