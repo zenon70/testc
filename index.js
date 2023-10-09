@@ -1,12 +1,30 @@
 const userName = document.getElementById("name");
-const userRole = document.getElementById("role");
 const submitBtn = document.getElementById("submitBtn");
-const date = new Date();
-
 
 const { PDFDocument, rgb, degrees } = PDFLib;
 
-const {userName.value, userRole.value, date.value} = val;
+
+const capitalize = (str, lower = false) =>
+  (lower ? str.toLowerCase() : str).replace(/(?:^|\s|["'([{])+\S/g, (match) =>
+    match.toUpperCase()
+  );
+
+submitBtn.addEventListener("click", () => {
+  const val = capitalize(userName.value);
+
+  //check if the text is empty or not
+  if (val.trim() !== "" && userName.checkValidity()) {
+    // console.log(val);
+    generatePDF(val);
+  } else {
+    userName.reportValidity();
+  }
+});
+
+const generatePDF = async (name) => {
+  const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
+    res.arrayBuffer()
+  );
 
   // Load a PDFDocument from the existing PDF bytes
   const pdfDoc = await PDFDocument.load(existingPdfBytes);
@@ -33,47 +51,6 @@ const {userName.value, userRole.value, date.value} = val;
     color: rgb(0.2, 0.84, 0.67),
   });
 
-  firstPage.drawText(role, {
-    x: 100,
-    y: 170,
-    size: 70,
-    font: SanChezFont,
-    color: rgb(0.2, 0.84, 0.67),
-  });
-
-firstPage.drawText(date, {
-    x: 400,
-    y: 370,
-    size: 70,
-    font: SanChezFont,
-    color: rgb(0.2, 0.84, 0.67),
-  });
-
-
-
-submitBtn.addEventListener("click", () => {
-
-    generatePDF(val);
- 
-});
-
-const generatePDF = async (name) => {
-  const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
-    res.arrayBuffer()
-  );
-
-
-const generatePDF = async (role) => {
-  const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
-    res.arrayBuffer()
-  );
-
-const generatePDF = async (date) => {
-  const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
-    res.arrayBuffer()
-  );
-
-
   // Serialize the PDFDocument to bytes (a Uint8Array)
   const pdfBytes = await pdfDoc.save();
   console.log("Done creating");
@@ -85,7 +62,7 @@ const generatePDF = async (date) => {
 
   var file = new File(
     [pdfBytes],
-    "certificate.pdf",
+    "Padhega India Subscription Certificate.pdf",
     {
       type: "application/pdf;charset=utf-8",
     }
