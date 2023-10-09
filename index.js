@@ -14,7 +14,7 @@ const capitalize = (str, lower = false) =>
 
 submitBtn.addEventListener("click", () => {
 
-    generatePDF();
+    generatePDF(name,role,date);
  
 });
 
