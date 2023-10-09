@@ -1,73 +1,47 @@
-const userName = document.getElementById("name");
-const submitBtn = document.getElementById("submitBtn");
-
-const { PDFDocument, rgb, degrees } = PDFLib;
 
 
-const capitalize = (str, lower = false) =>
-  (lower ? str.toLowerCase() : str).replace(/(?:^|\s|["'([{])+\S/g, (match) =>
-    match.toUpperCase()
-  );
 
-submitBtn.addEventListener("click", () => {
-  const val = capitalize(userName.value);
+    const { degrees, PDFDocument, rgb, StandardFonts } = PDFLib
 
-  //check if the text is empty or not
-  if (val.trim() !== "" && userName.checkValidity()) {
-    // console.log(val);
-    generatePDF(val);
-  } else {
-    userName.reportValidity();
-  }
-});
+    async function modifyPdf() {
+      // Fetch an existing PDF document
+      const url = 'https://pdf-lib.js.org/assets/with_update_sections.pdf'
+      const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
 
-const generatePDF = async (name) => {
-  const existingPdfBytes = await fetch("./cert.pdf").then((res) =>
-    res.arrayBuffer()
-  );
+      // Load a PDFDocument from the existing PDF bytes
+      const pdfDoc = await PDFDocument.load(existingPdfBytes)
 
-  // Load a PDFDocument from the existing PDF bytes
-  const pdfDoc = await PDFDocument.load(existingPdfBytes);
-  pdfDoc.registerFontkit(fontkit);
+      // Embed the Helvetica font
+      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
-  //get font
-  const fontBytes = await fetch("./Sanchez-Regular.ttf").then((res) =>
-    res.arrayBuffer()
-  );
+      // Get the first page of the document
+      const pages = pdfDoc.getPages()
+      const firstPage = pages[0]
 
-  // Embed our custom font in the document
-  const SanChezFont = await pdfDoc.embedFont(fontBytes);
+      // Get the width and height of the first page
+      const { width, height } = firstPage.getSize()
 
-  // Get the first page of the document
-  const pages = pdfDoc.getPages();
-  const firstPage = pages[0];
+      // Draw a string of text diagonally across the first page
+      firstPage.drawText('This text was added with JavaScript!', {
+        x: 5,
+        y: height / 2 + 300,
+        size: 50,
+        font: helveticaFont,
+        color: rgb(0.95, 0.1, 0.1),
+        rotate: degrees(-45),
+      })
+      firstPage.drawText('22222222', {
+        x: 8,
+        y: height / 2 + 300,
+        size: 50,
+        font: helveticaFont,
+        color: rgb(0.95, 0.1, 0.1),
+        rotate: degrees(-45),
+      })
 
-  // Draw a string of text diagonally across the first page
-  firstPage.drawText(name, {
-    x: 300,
-    y: 270,
-    size: 58,
-    font: SanChezFont,
-    color: rgb(0.2, 0.84, 0.67),
-  });
+      // Serialize the PDFDocument to bytes (a Uint8Array)
+      const pdfBytes = await pdfDoc.save()
 
-  // Serialize the PDFDocument to bytes (a Uint8Array)
-  const pdfBytes = await pdfDoc.save();
-  console.log("Done creating");
-
-  // this was for creating uri and showing in iframe
-
-  // const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
-  // document.getElementById("pdf").src = pdfDataUri;
-
-  var file = new File(
-    [pdfBytes],
-    "Padhega India Subscription Certificate.pdf",
-    {
-      type: "application/pdf;charset=utf-8",
+      // Trigger the browser to download the PDF document
+      download(pdfBytes, "pdf-lib_modification_example.pdf", "application/pdf");
     }
-  );
- saveAs(file);
-};
-
-// init();
