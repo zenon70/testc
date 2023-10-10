@@ -38,7 +38,7 @@ async function generateCertificate() {
 
     page.drawText(`Certificate of Completion`, { x, y, fontSize: 20 });
     page.drawText(`This is to certify that`, { x, y: y - 30, fontSize: 14 });
-    page.drawText(`${studentDetails.name}`, { x, y: y - 60, fontSize: 18, color: RGB(0, 0, 0) });
+    page.drawText(`${studentDetails.name}`, { x, y: y - 60, fontSize: 18 });
     page.drawText(`has successfully completed the course.`, { x, y: y - 90, fontSize: 14 });
 
     // Save the PDF to a file
