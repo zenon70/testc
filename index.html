@@ -8,19 +8,71 @@
 <body>
     <h1>Generate PDF Certificate</h1>
     
-    <label for="studentId">Enter Student ID:</label>
-    <input type="text" id="studentId" />
-    <button onclick="generateCertificate()">Generate Certificate</button>
+    <label for="search">Search by Student ID:</label>
+    <input type="text" id="search" />
+    <button onclick="searchStudent()">Search</button>
+
+    <div id="studentList"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.13.0/dist/pdf-lib.js"></script>
     <script>
 
-// your-script.js
 
-async function generateCertificate() {
-    const studentId = document.getElementById('studentId').value;
+// Sample JSON data
+const studentsData = {
+  "students": [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "course": "Computer Science",
+      "completionDate": "2023-10-10"
+    },
+    {
+      "id": "2",
+      "name": "Jane Smith",
+      "course": "Mathematics",
+      "completionDate": "2023-10-11"
+    },
+    {
+      "id": "3",
+      "name": "Bob Johnson",
+      "course": "Physics",
+      "completionDate": "2023-10-12"
+    }
+   
+  ]
+};
 
-    // Fetch student details based on the ID (You need to implement this part)
+// Display all students initially
+displayStudents(studentsData.students);
+
+function displayStudents(students) {
+    const studentListDiv = document.getElementById('studentList');
+    studentListDiv.innerHTML = '';
+
+    students.forEach(student => {
+        const studentDiv = document.createElement('div');
+        studentDiv.innerHTML = `
+            <p>${student.name} (ID: ${student.id}) - ${student.course}</p>
+            <button onclick="generateCertificate('${student.id}')">Generate Certificate</button>
+            <hr>
+        `;
+        studentListDiv.appendChild(studentDiv);
+    });
+}
+
+function searchStudent() {
+    const searchInput = document.getElementById('search');
+    const searchTerm = searchInput.value.toLowerCase();
+
+    // Filter students based on the search term
+    const filteredStudents = studentsData.students.filter(student => student.id.toLowerCase().includes(searchTerm));
+
+    displayStudents(filteredStudents);
+}
+
+async function generateCertificate(studentId) {
+    // Fetch student details based on the ID
     const studentDetails = await fetchStudentDetails(studentId);
 
     if (!studentDetails) {
@@ -38,7 +90,7 @@ async function generateCertificate() {
 
     page.drawText(`Certificate of Completion`, { x, y, fontSize: 20 });
     page.drawText(`This is to certify that`, { x, y: y - 30, fontSize: 14 });
-    page.drawText(`${studentDetails.name}`, { x, y: y - 60, fontSize: 18 });
+    page.drawText(`${studentDetails.name}`, { x, y: y - 60, fontSize: 18, color: RGB(0, 0, 0) });
     page.drawText(`has successfully completed the course.`, { x, y: y - 90, fontSize: 14 });
 
     // Save the PDF to a file
@@ -46,16 +98,10 @@ async function generateCertificate() {
     downloadPDF(pdfBytes, `${studentDetails.name}_Certificate.pdf`);
 }
 
-
-
 async function fetchStudentDetails(studentId) {
     try {
-        // Read the local JSON file
-        const response = await fetch('students.json');
-        const data = await response.json();
-
         // Find the student with the given ID
-        const student = data.students.find(s => s.id === studentId);
+        const student = studentsData.students.find(s => s.id === studentId);
 
         if (!student) {
             console.error(`Student with ID ${studentId} not found`);
@@ -69,8 +115,6 @@ async function fetchStudentDetails(studentId) {
     }
 }
 
-
-
 function downloadPDF(pdfBytes, filename) {
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
     const link = document.createElement('a');
@@ -78,9 +122,6 @@ function downloadPDF(pdfBytes, filename) {
     link.download = filename;
     link.click();
 }
-
-
-
 
         
     </script>
