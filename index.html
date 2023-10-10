@@ -1,34 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get Your Certificate for PadhegaIndia</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="favicon" href="favicon.ico">
+    <title>Generate PDF Certificate</title>
 </head>
-
 <body>
-    <header>
-        <img src="./padhega india.png" alt="Padhega India Logo">
-        <h4>Get your certificate of subscription to</h4>
-        <h1> <a href="https://www.youtube.com/channel/UCUwURiBONxHJw1vdxU_RGkw" target="_blank"
-                rel="noopener noreferrer">Padhega India</a></h1>
-    </header>
-    <main>
+    <h1>Generate PDF Certificate</h1>
+    
+    <label for="studentId">Enter Student ID:</label>
+    <input type="text" id="studentId" />
+    <button onclick="generateCertificate()">Generate Certificate</button>
 
-        <label for="name">Type Your Name</label>
-        <input required type="text" name="Name" autocomplete="name" placeholder="Accha Baccha" id="name" minlength="3"
-            maxlength="16">
-        <Button onclick="modifyPdf()">Get Certificate</Button>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.13.0/dist/pdf-lib.js"></script>
+    <script>
+
+// your-script.js
+
+async function generateCertificate() {
+    const studentId = document.getElementById('studentId').value;
+
+    // Fetch student details based on the ID (You need to implement this part)
+    const studentDetails = await fetchStudentDetails(studentId);
+
+    if (!studentDetails) {
+        alert('Student not found');
+        return;
+    }
+
+    // Generate PDF certificate
+    const pdfDoc = await PDFLib.PDFDocument.create();
+    const page = pdfDoc.addPage([600, 400]);
+
+    // Add content to the certificate
+    const { width, height } = page.getSize();
+    const { x, y } = { x: 50, y: height - 150 };
+
+    page.drawText(`Certificate of Completion`, { x, y, fontSize: 20 });
+    page.drawText(`This is to certify that`, { x, y: y - 30, fontSize: 14 });
+    page.drawText(`${studentDetails.name}`, { x, y: y - 60, fontSize: 18, color: RGB(0, 0, 0) });
+    page.drawText(`has successfully completed the course.`, { x, y: y - 90, fontSize: 14 });
+
+    // Save the PDF to a file
+    const pdfBytes = await pdfDoc.save();
+    downloadPDF(pdfBytes, `${studentDetails.name}_Certificate.pdf`);
+}
 
 
-    </main>
-    <script src="https://unpkg.com/pdf-lib@1.4.0"></script>
-    <script src="./FileSaver.js"></script>
-    <script src="https://unpkg.com/@pdf-lib/fontkit@0.0.4"></script>
-    <script src="./index.js"></script>
+
+async function fetchStudentDetails(studentId) {
+    // Read the JSON file
+    const response = await fetch('students.json');
+    const data = await response.json();
+
+    // Find the student with the given ID
+    const student = data.students.find(s => s.id === studentId);
+
+    return student;
+}
+
+
+
+function downloadPDF(pdfBytes, filename) {
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+}
+
+
+
+
+        
+    </script>
 </body>
-
 </html>
