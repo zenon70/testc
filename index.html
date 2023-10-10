@@ -49,14 +49,24 @@ async function generateCertificate() {
 
 
 async function fetchStudentDetails(studentId) {
-    // Read the JSON file
-    const response = await fetch('students.json');
-    const data = await response.json();
+    try {
+        // Read the local JSON file
+        const response = await fetch('students.json');
+        const data = await response.json();
 
-    // Find the student with the given ID
-    const student = data.students.find(s => s.id === studentId);
+        // Find the student with the given ID
+        const student = data.students.find(s => s.id === studentId);
 
-    return student;
+        if (!student) {
+            console.error(`Student with ID ${studentId} not found`);
+            return null;
+        }
+
+        return student;
+    } catch (error) {
+        console.error('Error fetching student details:', error);
+        return null;
+    }
 }
 
 
